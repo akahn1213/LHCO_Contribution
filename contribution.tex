@@ -26,28 +26,46 @@
 
 %%%%%%%%%%%%%%%%%%%%%%
 \section*{Anomalous Jet Identification via Variational Recurrent Neural Network}
-Authors: Alan Kahn, Julia Gonski, In\^{e}s Ochoa, Daniel Williams, Gustaaf Brooijmans \\ \textit{Nevis Laboratories, Columbia University, Address}\\
+Authors: Alan Kahn, Julia Gonski, In\^{e}s Ochoa, Daniel Williams, Gustaaf Brooijmans \\ \textit{Nevis Laboratories, Columbia University, 136 S Broadway, Irvington NY 10533}\\
 
 %\noindent \textit{Please do not write an introduction to anomaly detection - we will have one introduction at the beginning.  Furthermore, please give your method a concise name - it is fine to say \textbf{Concise Name: Longer Name that is More Specific.}  The length limit is five pages of text (not included references), with fewer pages preferred, and at most one additional page of figures if needed.}
 
 \subsection{Method}
 \label{sec:method}
 
-Our method employs a Variational Recurrent Neural Network (VRNN) to model jets as a sequence of constituents. A VRNN is a sequence-modeling architecture which replaces the standard encoder-decoder architecture of a Recurrent Neural Network with a Variational Autoencoder. This allows the VRNN to perform both sequence modeling as well as \textit{Variational Inference}, which has been shown to be a very powerful tool in the task of Anomaly Detection [Ref]. Figure \ref{fig:VRNN} shows a diagram of one VRNN cell. 
-
-Inputs to the VRNN consist of sequences of jet 4-vector constituents. Before training, we apply a pre-processing method which boosts each jet to the same reference mass, energy, and orientation, such that all jets are superficially the same with the only differences being their substructure. In addition, our pre-processing method includes a choice of \textit{sequence ordering}, in which the constituent sequence input into the model is sorted by $k_{t}$-distance instead of by constituent $p_{T}$. In more detail, the $n^{th}$ constituent in the list is determined to be the constituent with the highest $k_{t}$-distance relative to the previous constituent, with the first constituent in the list being the highest $p_{T}$ constituent.
-\begin{align*}
-c_{n} &= max(p_{Tn}\Delta R_{n, n-1})
-\end{align*}
-The loss function used is very similar to that of an ordinary Variational Autoencoder. It consists of a mean-squared-error loss between input constituents and generated output constituents as a reconstruction loss, as well as a weighted KL-Divergence from the latent space prior to the learned approximate posterior distribution. Since softer constituents contribute less to the overall classification of jet substructure, each KL-Divergence term, computed constituent-wise, is weighted by the constituent's $p_{T}$-fraction, averaged over all jets in the dataset to avoid correlations with constituent multiplicity. An additional weight coefficient is enforced as a hyperparameter, and has been optimized to be 0.1 in our studies. 
-\begin{align*}
-\mathcal{L}(t)=MSE+0.1\overline{p_T}(t)D_{KL}
-\end{align*}
-The architecture is built with 16 dimensional hidden layers, including the hidden state, with a two-dimensional latent space. All hyperparameters used result from a hyperparameter optimization scan. 
-
-Our model is trained on the leading and sub-leading jets of each event, where our input datasets consist of the entirety Background and Black Box events. After training, we determine an overall \textit{Event Score} by choosing the most anomalous score between the leading and sub-leading jets. To ensure consistency between training scenarios, Event Scores are subject to a transformation in which the mean of the resulting distribution is set to a value of 0.5, and Event Scores closer to 1 correspond to more anomalous events. Our results are then produced by applying a cut on the Event Score at a value of 0.65, as well as restricting the pseudorapidity of the leading and sub-leading jets to less than 0.75 to ensure that central, high momentum transfer events are being considered. 
-
 %please introduce the motivation for your method (not anomaly detection in general), how it works, and how you have implemented it. Please include details about how you trained your algorithms and how your picked your hyperparameters.
+
+Our method employs a Variational Recurrent Neural Network (VRNN) to model jets as a sequence of constituents. A VRNN is a sequence-modeling architecture which replaces the standard encoder-decoder architecture of a Recurrent Neural Network with a Variational Autoencoder~\cite{chung2016recurrent}. 
+This allows the VRNN to perform both sequence modeling as well as \textit{Variational Inference}, which has been shown to be a very powerful tool for Anomaly Detection \textcolor{red}{[Ref]}. 
+Figure \ref{fig:VRNN} shows a diagram of one VRNN cell. \textcolor{red}{Label what h, x, z, mu, etc are.}. 
+
+%JG: expand more here:  references for RNN, VAE? why good for anomaly detection? Why good for the task of anomalous jet identification? Why italics? Mention that you train directly over data, no need for signal hypothesis, preface what contamination is
+
+Inputs to the VRNN are variable-length sequences of jet constituent four-vectors, where jets are reconstructed using the anti-$k_t$ algorithm with a radius parameter of 1.0~\cite{Cacciari_2008}.
+Before training, a pre-processing method is applied which boosts each jet to the same reference mass, energy, and orientation, such that all input jets differ only by their substructure. 
+%JG: maybe frame this as 'pT ordering is standard, so we look at it, but also propose a new better option' ?
+The pre-processing method requires a choice of \textit{sequence ordering}; in this analysis, the constituent sequence input into the model is sorted by constituent $k_{t}$-distance. 
+In more detail, the $n^{th}$ constituent in the list is determined to be the constituent with the highest $k_{t}$-distance relative to the previous constituent, with the first constituent in the list being the highest $p_{T}$ constituent.
+\begin{equation}
+c_{n} = max(p_{Tn}\Delta R_{n, n-1})
+\end{equation}
+
+The loss function used is very similar to that of an ordinary Variational Autoencoder. 
+It consists of a mean-squared-error loss between input constituents and generated output constituents as a reconstruction loss, as well as a weighted KL-Divergence from the latent space prior to the learned approximate posterior distribution. 
+%JG: 'computed constituent wise'... 
+Since softer constituents contribute less to the overall classification of jet substructure, each KL-Divergence term, computed constituent-wise, is weighted by the constituent's $p_{T}$-fraction of the total jet, averaged over all jets in the dataset to avoid correlations with constituent multiplicity. 
+The weight coefficient of the KL-Divergence term is enforced as a hyperparameter, and has been optimized to a value of 0.1 in dedicated studies. 
+\begin{equation}
+\mathcal{L}(t)=MSE+0.1 \times \overline{p_T}(t)D_{KL}
+\end{equation}
+The architecture is built with 16 dimensional hidden layers, including the hidden state, with a two-dimensional latent space. All hyperparameters used are determined by a hyperparameter optimization scan. 
+
+The model is trained on constituents of the leading and sub-leading jets of each event, where events are taken from the LHC Olympics datasets. 
+After training, an overall \textit{Event Score} is determined by choosing the most anomalous score between the leading and sub-leading jets. 
+To ensure consistency between training scenarios, Event Scores are subject to a transformation in which the mean of the resulting distribution is set to a value of 0.5, and Event Scores closer to 1 correspond to more anomalous events. 
+A preselection is applied that requires the pseudorapidity of the leading and sub-leading jets to less than 0.75, to ensure that only central, high momentum transfer events are considered. 
+Results are then produced by applying a cut on the Event Score at a value of 0.65, to enrich anomalous jets over the background.
+%JG why 0.65? 
 
 
 %VRNN Diagram
@@ -121,11 +139,7 @@ Our model is trained on the leading and sub-leading jets of each event, where ou
 
         %GRU
         \node[gru, fill=grucolor] (gru) at (13.5, -7.25) {GRU};
-  
-
-
-
-
+ 
         %Arrows
         %Hidden Layers
         \path (Ix) edge (h1);
@@ -140,8 +154,6 @@ Our model is trained on the leading and sub-leading jets of each event, where ou
         \path (catphixh) edge (gru);
         \path (cathsh) edge (gru);
       
-
-
         %Latent Space
         \path (h3) edge (lmuz);
         \path (h3) edge (lsiz);
@@ -150,27 +162,20 @@ Our model is trained on the leading and sub-leading jets of each event, where ou
         \path (lmuz) edge (lz);
         \path (lsiz) edge (lz);
 
-        
-
         %Other
         %\path (phix) edge (catphixi);
         %\path (phiz) edge (catphizo);
-
-
-
+        
         %HLV Lines
         %\draw[->, draw=hlvlinecolor, thick] (0.5, -5) -- (3.3, -5) -- (3.3, -1) -- (3.55, -1);
         %\draw[->, draw=hlvlinecolor, thick] (3.2, -5) -- (11.4, -5) -- (11.4, -1) -- (11.65, -1);
         %\draw[->, draw=hlvlinecolor, thick] (11.4, -5) -- (11.4, -6.75) -- (11.65, -6.75);
-
 
         %Hidden State Lines
         \draw[->, draw=hslinecolor, thick] (0.5, -9) -- (4.05, -9) -- (4.05, -2.25);
         \draw[->, draw=hslinecolor, thick] (4.05, -7) -- (5.0, -7);
         \draw[->, draw=hslinecolor, thick] (4.05, -9) -- (11.62, -9);               
         \draw[->, draw=hslinecolor, thick] (11.1, -9) -- (11.1, -2.9375) -- (12.15, -2.9375) -- (12.15, -2.25);
-
-
 
         %phix,z lines
         
@@ -183,73 +188,77 @@ Our model is trained on the leading and sub-leading jets of each event, where ou
         \draw[->, draw=featurelinecolor, thick] (11.175, -0.375) -- (11.65, -0.375);
         \draw[->, draw=featurelinecolor, thick] (10.8, -2.25) -- (10.8, -4.25) -- (11.62, -4.25);
     
-  
-
-
-
         %KL dashed box
         \node[gru, minimum width=10cm, minimum height=1.25cm, dashed] (kld) at (8.1, -4) {\rotatebox{-45}{$D_{KL}$}};
 
     \end{tikzpicture}
   
   \end{center}
-  \caption{A Variational Recurrent Neural Network cell}
+  \caption{A Variational Recurrent Neural Network cell. \textcolor{red}{define vars}}
   \label{fig:VRNN}
 \end{figure}
 
+%---------------------------------------------------------------------------------------------------------------------------------------------------------
+%---------------------------------------------------------------------------------------------------------------------------------------------------------
 \subsection{Results on LHC Olympics}
 \label{sec:results}
 
 %\noindent \textit{We welcome results on any of the black boxes (BBs) as well as the R\&D dataset.  Please try to minimize any discussion of non-LHCO results.  Figures should be referenced like this: Fig.~\ref{fig:fig1}.}
 
-We first present results with the R\&D dataset. With a contaminated dataset consisting of 895113 background events and 4498 signal events corresponding to a contamination level of 0.5\%,we aim to reconstruct the Z' mass peak using only a cut on the Event Score as a discriminator. Figure \ref{fig:m_v_s} shows the two-dimensial histogram of dijet combination mass vs Event Score, where we see the Z' mass at 3500GeV clearly visible at higher values of the Event Score. Figure \ref{fig:m_JJ} shows the one-dimensional dijet mass distributions before and after a cut on the Event Score, along with the local significance of the signal in each bin. We see that a cut on the Anomaly Score dramatically increases the significance of the excess from $1\sigma$ to $6\sigma$ at a signal contamination of 0.5\% while still retaining the smoothly falling behavior of the background
+The performance of the VRNN was first assessed with the LHC Olympics R\&D dataset, which includes a known signal of a beyond the Standard Model Z' boson with mass 3500 GeV decaying to two R=1.0 jets. The VRNN was trained over a contaminated dataset consisting of 895113 background events and 4498 signal events, corresponding to a signal contamination level of 0.5\%.
+A cut on the Event Score is applied as a discriminator, and the invariant mass $m_{JJ}$ of the two jets is then scanned to assess the prominence of the Z' mass peak.
+Figure \ref{fig:m_v_s} shows a two-dimensional histogram of $m_{JJ}$ vs. Event Score, where the Z' events at 3500 GeV are clearly enhanced at higher values of the Event Score. 
+Figure \ref{fig:m_JJ} shows the dijet invariant mass distributions before and after the cut on the Event Score defined in Section~\ref{sec:method}, along with the local significance of the signal in each bin. 
+A cut on the Event Score dramatically increases the significance of the excess from $1\sigma$ to $6\sigma$ at a signal contamination of 0.5\% while still retaining the smoothly falling behavior of the background.
+%JG: reference how you compute sigma 
 
+%JG: why do some figure borders get cut off?? 
 \begin{figure}[h!]
 \centering
 \includegraphics[width=0.5\textwidth]{imgs/ProcR_2Prong_Contaminated_10p0_2Prong_Contaminated_10p0_Weights_Event_ConstOnly_Avg_JJ_M_vs_Event_Score.png}
-\caption{Description of the figure.  Reproduced from Ref.~\cite{Nachman:2020lpy}.}
+\caption{Dijet invariant mass $m_{jj}$ as a function of Event Score in the contaminated R\&D dataset.}
 \label{fig:m_v_s}
 \end{figure}
 
 \begin{figure}[h!]
 	\begin{center}
-		\includegraphics[width=0.49\textwidth]{imgs/2Prong_Contaminated_0p5_JJ_Mass_Multi.png}
-		\includegraphics[width=0.49\textwidth]{imgs/2Prong_Contaminated_0p5_JJ_Mass_EventScore0p65_Multi.png}
+		\includegraphics[width=0.47\textwidth]{imgs/2Prong_Contaminated_0p5_JJ_Mass_Multi.png}
+		\includegraphics[width=0.47\textwidth]{imgs/2Prong_Contaminated_0p5_JJ_Mass_EventScore0p65_Multi.png}
 	\end{center}
-	\caption{2-Prong dijet mass distributions before (left) and after (right) a cut on the Event Score, at a signal contamination of 0.5\%}
+	\caption{Dijet invariant mass distributions before (left) and after (right) a cut on the Event Score, with a two-prong Z' signal contamination of 0.5\%.}
 	\label{fig:m_JJ}
 \end{figure}
 
-Applying this method to Black Box 1, we arrive at the mass distributions of Figure {\ref{fig:bb1}}. Plotted here is the mass of the dijet combination for both the Black Box 1 dataset as well as the Background dataset, displayed as a dashed line. The important feature in this result is the shoulder present at around 4TeV, which corresponds to the present Z' signal at a mass of 3.8TeV. 
+Once the method was validated in the R\&D dataset, it was applied to Black Box 1. Figure {\ref{fig:bb1}} shows the dijet invariant mass of the dijet for both Black Box 1 and Background datasets. The cut on Event Score reveals an enhancement in $m_{JJ}$ around 4000 GeV. This is consistent with the Black Box 1 signal, which is a new Z' boson with a mass of 3800 GeV decaying to two new particles with masses 732 GeV and 378 GeV.
 
 \begin{figure}[h!]
 	\begin{center}
-		\includegraphics[width=0.49\textwidth]{imgs/BB1.png}
-		\includegraphics[width=0.49\textwidth]{imgs/BB1_Cut.png}
+		\includegraphics[width=0.47\textwidth]{imgs/BB1.png}
+		\includegraphics[width=0.47\textwidth]{imgs/BB1_Cut.png}
 	\end{center}
-	\caption{2-Prong dijet mass distributions before (left) and after (right) a cut on the Event Score, at a signal contamination of 0.5\%}
+	\caption{Dijet invariant mass distributions before (left) and after (right) a cut on the Event Score from the Black Box 1 dataset.}
 	\label{fig:bb1}
 \end{figure}
 
-In Black Box 2, our model shows no significant excesses. Furthermore, the behavior of the Event Score consistently affects the distributions of both Black Box 2 and the Background dataset. It is important to note that the model was trained independently on each dataset, and the resulting Event Scores are from entirely unique sets of network weights.
+The same method applied to Black Box 2 shows no significant excesses in the invariant mass distribution. Additionally, the effect of the Event Score cut on the $m_{JJ}$ shapes is similar between Black Box 2 and Background datasets. Black Box 2 does not contain any beyond the Standard Model events, and therefore these results are consistent with a QCD-only sample. It is important to note that the model was trained independently on each dataset, and the resulting Event Scores are from entirely unique sets of network weights.
 
 \begin{figure}[h!]
 	\begin{center}
-		\includegraphics[width=0.49\textwidth]{imgs/BB2.png}
-		\includegraphics[width=0.49\textwidth]{imgs/BB2_Cut.png}
+		\includegraphics[width=0.47\textwidth]{imgs/BB2.png}
+		\includegraphics[width=0.47\textwidth]{imgs/BB2_Cut.png}
 	\end{center}
-	\caption{2-Prong dijet mass distributions before (left) and after (right) a cut on the Event Score, at a signal contamination of 0.5\%}
+	\caption{Dijet invariant mass distributions before (left) and after (right) a cut on the Event Score from the Black Box 2 dataset.}
 	\label{fig:bb2}
 \end{figure}
 
-Figure \ref{fig:bb3} shows our results for Black Box 3. Our model is specifically sensitive to boosted final states, and as a result, we are insensitive to the signal present in this Black Box. 
+Figure \ref{fig:bb3} shows results for Black Box 3. The signal in Black Box 3 contained two decays modes of a new 4.2 TeV particle, one to two quarks and the other to a trijet resonance with a new 2.2 TeV particle in the decay chain. Our model is specifically sensitive to boosted final states, and as a result, we are insensitive to the signal present in this Black Box. 
 
 \begin{figure}[h!]
 	\begin{center}
-		\includegraphics[width=0.49\textwidth]{imgs/BB3.png}
-		\includegraphics[width=0.49\textwidth]{imgs/BB3_Cut.png}
+		\includegraphics[width=0.47\textwidth]{imgs/BB3.png}
+		\includegraphics[width=0.47\textwidth]{imgs/BB3_Cut.png}
 	\end{center}
-	\caption{2-Prong dijet mass distributions before (left) and after (right) a cut on the Event Score, at a signal contamination of 0.5\%}
+	\caption{Dijet invariant mass distributions before (left) and after (right) a cut on the Event Score from the Black Box 3 dataset.}
 	\label{fig:bb3}
 \end{figure}
 
@@ -259,7 +268,17 @@ Figure \ref{fig:bb3} shows our results for Black Box 3. Our model is specificall
 
 %\noindent \textit{Please say anything that you learned from the experience in general, what you learned specifically from the results, what you improved after you learned about BB1, what you would change in the future, etc.}
 
-This challenge presented a highly accessible avenue for development of our model. We are particularly surprised by the effect of our pre-processing method on the performance of the model, specifically by our choice of $k_{t}$-ordered sequencing, and find it to be a very interesting result which may have a number of applications in a wide range of analysis contexts. Overall, we view the VRNN as a model capable of identifying objects within a contaminated dataset as long as they can be characterized by sequential data. While we limited our scope in this study to be entirely unsupervised with absolutely no external information helping the model understand the elements of data that it is modeling, the simpllicity of the VRNN's architecture, being both a RNN and a VAE, opens the possibility of accommodating more supervised training scenarios. We also restricted some of our development tracks in the interest of simplicity, but feel that a number of adjustments to the architecture, such as a dedicated adversarial mass de-correlation network, or an additional input layer representing high-level features, are worthwhile avenues of exploration.
+%JG: not sure what 'accessible' means... 
+This challenge presented a highly accessible avenue for development of our model. 
+Results from the R\&D and Black Box dataset analyses indicate that the VRNN is capable of identifying anomalous objects within a contaminated dataset as long as they can be characterized by sequential data. 
+Since the VRNN takes constituent information as input and learns jet substructure without explicit reliance on high level variables, it is less correlated with jet mass than standard substructure variables such as N-subjettiness. 
+%JG: "surprised" doesn't seem like a great word 
+We learned that the pre-processing method is hugely influential on the performance of the model, in particular the choice of $k_{t}$-ordered sequencing. 
+This is a generalizable conclusion that can be applied to the understanding and use of jet substructure in analysis.
+
+Given these lessons, there are a variety of future opportunities with this application of the VRNN architecture to jet-level anomaly detection. 
+While we limited our scope in this study to be entirely unsupervised with no signal or background model information, the RNN and VAE elements of the VRNN open the possibility of accommodating more supervised training scenarios. 
+Further, a number of advancements to the architecture, such as a dedicated adversarial mass decorrelation network, or an additional input layer representing high-level features, are worthwhile avenues of exploration to enhance performance while minimizing unwanted correlations. 
 
 %\subsection{Code Availability}
 %\label{code:code}
