@@ -1,0 +1,20 @@
+\providecommand{\href}[2]{#2}\begingroup\raggedright\begin{thebibliography}{1}
+
+\bibitem{chung2016recurrent}
+J.~Chung, K.~Kastner, L.~Dinh, K.~Goel, A.~Courville, and Y.~Bengio, {\it A
+  recurrent latent variable model for sequential data},  2016.
+
+\bibitem{An2015VariationalAB}
+J.~An and S.~Cho, {\it Variational autoencoder based anomaly detection using
+  reconstruction probability},  2015.
+
+\bibitem{Cacciari_2008}
+M.~Cacciari, G.~P. Salam, and G.~Soyez, {\it The anti-ktjet clustering
+  algorithm},  {\em Journal of High Energy Physics} {\bf 2008} (Apr, 2008)
+  063–063.
+
+\bibitem{moneta2011roostats}
+L.~Moneta, K.~Belasco, K.~Cranmer, S.~Kreiss, A.~Lazzaro, D.~Piparo, G.~Schott,
+  W.~Verkerke, and M.~Wolf, {\it The roostats project},  2011.
+
+\end{thebibliography}\endgroup

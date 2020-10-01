@@ -1,0 +1,57 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: contribution.aux
+The style file: jhep.bst
+Database file #1: HEPML.bib
+Database file #2: contribution.bib
+Repeated entry---line 1 of file contribution.bib
+ : @misc{chung2016recurrent
+ :                         ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 9 of file contribution.bib
+ : @article{Cacciari_2008
+ :                       ,
+I'm skipping whatever remains of this entry
+Warning--empty booktitle in An2015VariationalAB
+You've used 4 entries,
+            2195 wiz_defined-function locations,
+            535 strings with 4174 characters,
+and the built_in function-call counts, 1029 in all, are:
+= -- 79
+> -- 68
+< -- 0
++ -- 24
+- -- 20
+* -- 68
+:= -- 156
+add.period$ -- 4
+call.type$ -- 4
+change.case$ -- 4
+chr.to.int$ -- 0
+cite$ -- 5
+duplicate$ -- 52
+empty$ -- 97
+format.name$ -- 20
+if$ -- 248
+int.to.chr$ -- 0
+int.to.str$ -- 4
+missing$ -- 5
+newline$ -- 15
+num.names$ -- 4
+pop$ -- 31
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 39
+stack$ -- 0
+substring$ -- 18
+swap$ -- 19
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 1
+while$ -- 5
+width$ -- 5
+write$ -- 33
+(There were 2 error messages)
