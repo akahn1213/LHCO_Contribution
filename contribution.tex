@@ -106,7 +106,7 @@ To ensure consistency between training scenarios, Event Scores are subject to a 
 %\noindent \textit{We welcome results on any of the black boxes (BBs) as well as the R\&D dataset.  Please try to minimize any discussion of non-LHCO results.  Figures should be referenced like this: Fig.~\ref{fig:fig1}.
 
 The performance of the VRNN was first assessed with the LHC Olympics R\&D dataset, which includes a known signal of a beyond the Standard Model W' boson with a mass of 3500GeV which decays to two hadronically decaying X and Y particles, each reconstructed by a R=1.0 jet.
-This study was used as a validation of the method, with a goal of directly investigating the ability of the Event Score cut to reconstruct the W' mass. 
+This study was used as a validation of the method, with a goal of directly investigating the ability of the Event Score selection to reconstruct the W' mass. 
 Therefore, no selections beyond those described in Section~\ref{sec:method} are applied.
 
 
@@ -116,7 +116,7 @@ In this validation analysis, the Event Score is required to exceed a value of 0.
 This value is chosen to significantly enrich the fraction of anomalous jet events over the background, while retaining enough statistics in the background to display its smoothly falling behavior.
 
 Figure \ref{fig:m_JJ} shows the dijet invariant mass distributions before and after the Event Score selection, along with the local significance of the signal computed in each bin using the {\sc BinomialExpZ} function from {\sc RooStats} with a relative background uncertainty of 15\%~\cite{moneta2011roostats}.
-Applying this cut dramatically increases the significance of the excess from $0.18\sigma$ to $2.2\sigma$ at a signal contamination of 0.5\% without significantly sculpting the shape of the background.
+Applying this selection dramatically increases the significance of the excess from $0.18\sigma$ to $2.2\sigma$ at a signal contamination of 0.5\% without significantly sculpting the shape of the background.
 
 
 \begin{figure}[h!]
@@ -124,18 +124,18 @@ Applying this cut dramatically increases the significance of the excess from $0.
 		\includegraphics[width=0.47\textwidth]{imgs/2Prong_Contaminated_0p5_JJ_Mass_Multi.png}
 		\includegraphics[width=0.47\textwidth]{imgs/2Prong_Contaminated_0p5_JJ_Mass_EventScore0p65_Multi.png}
 	\end{center}
-	\caption{Dijet invariant mass distributions before (left) and after (right) a cut on the Event Score, with a two-prong W' signal contamination of 0.5\%.}
+	\caption{Dijet invariant mass distributions before (left) and after (right) a selection on the Event Score, with a two-prong W' signal contamination of 0.5\%.}
 	\label{fig:m_JJ}
 \end{figure}
 
-Once the method was validated in the R\&D dataset, it was applied to Black Box 1, with a re-optimized tighter cut on the Event Score of 0.75, as well as a cut on the pseudorapidity of the leading and sub-leading jets to less than 0.75, to ensure that central, high momentum transfer events are considered. Figure {\ref{fig:bb1}} shows the dijet invariant mass for both Black Box 1 and Background datasets. The Event Score selection reveals an enhancement in $m_{JJ}$ just below 4000 GeV. This is consistent with the Black Box 1 signal, which is a new Z' boson with a mass of 3800 GeV decaying to two new particles, each decaying hadronically.
+Once the method was validated in the R\&D dataset, it was applied to Black Box 1, with a re-optimized tighter selection on the Event Score of 0.75, as well as a requirement on the pseudorapidity of the leading and sub-leading jets to be less than 0.75, to ensure that central, high momentum transfer events are considered. Figure {\ref{fig:bb1}} shows the dijet invariant mass for both Black Box 1 and Background datasets. The Event Score selection reveals an enhancement in $m_{JJ}$ just below 4000 GeV. This is consistent with the Black Box 1 signal, which is a new Z' boson with a mass of 3800 GeV decaying to two new particles, each decaying hadronically.
 
 \begin{figure}[h!]
 	\begin{center}
 		\includegraphics[width=0.47\textwidth]{imgs/BB1.png}
 		\includegraphics[width=0.47\textwidth]{imgs/BB1_Cut.png}
 	\end{center}
-	\caption{Dijet invariant mass distributions before (left) and after (right) a cut on the Event Score from the Black Box 1 dataset. The signal present is a Z' boson with a mass of 3800 GeV.}
+	\caption{Dijet invariant mass distributions before (left) and after (right) a selection on the Event Score from the Black Box 1 dataset. The signal present is a Z' boson with a mass of 3800 GeV.}
 	\label{fig:bb1}
 \end{figure}
 
