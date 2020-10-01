@@ -35,7 +35,7 @@ Authors: Alan Kahn, Julia Gonski, In\^{e}s Ochoa, Daniel Williams, Gustaaf Brooi
 
 %please introduce the motivation for your method (not anomaly detection in general), how it works, and how you have implemented it. Please include details about how you trained your algorithms and how your picked your hyperparameters.
 
-Our method employs a Variational Recurrent Neural Network (VRNN) to model jets as a sequence of constituents. A VRNN is a sequence-modeling architecture which replaces the standard encoder-decoder architecture of a Recurrent Neural Network with a Variational Autoencoder (VAE)~\cite{chung2016recurrent}. 
+The method described here employs a Variational Recurrent Neural Network (VRNN) to model jets as a sequence of constituents. A VRNN is a sequence-modeling architecture which replaces the standard encoder-decoder architecture of a Recurrent Neural Network with a Variational Autoencoder (VAE)~\cite{chung2016recurrent}. 
 This allows the VRNN to perform both sequence modeling in addition to variational inference, which has been shown to be a very powerful tool for anomaly detection.
 The sequence modeling aspect of the VRNN allows it to accommodate variable-length inputs, which is conducive to lists of constituent four-vectors in a jet. 
 A recurrent architecture is well-motivated as it can suppress the ability of the model to learn correlations with the jet's constituent multiplicity.
@@ -59,7 +59,7 @@ c_{n} = max(p_{Tn}\Delta R_{n, n-1})
 This ordering is chosen such that non QCD-like substructure, characterized by two or more separate prongs of constituents within in the jet, is more easily characterized by the sequence. 
 When compared to $p_{T}$-sorted constituent ordering, the $k_{t}$-sorted sequence consistently travels between each prong, making their existence readily apparent and easy to model. As a result, a significant boost in performance is observed as a result of this sequence ordering choice. 
 
-The loss function used is very similar to that of an ordinary Variational Autoencoder. 
+The loss function used is very similar to that of an ordinary VAE. 
 It consists of a mean-squared-error (MSE) loss between input constituents and generated output constituents as a reconstruction loss, as well as a weighted KL-Divergence from the latent space prior to the learned approximate posterior distribution. 
 Since softer constituents contribute less to the overall classification of jet substructure, each KL-Divergence term, computed constituent-wise, is weighted by the constituent's $p_{T}$-fraction with respect to the jet's total $p_{T}$, averaged over all jets in the dataset to avoid correlations with constituent multiplicity. 
 The weight coefficient of the KL-Divergence term is enforced as a hyperparameter, and has been optimized to a value of 0.1 in dedicated studies. 
@@ -184,10 +184,11 @@ Furthermore, a number of advancements to the architecture, such as a dedicated a
 
 This work was supported by the U.S.~Department of Energy, Office of Science under contract DE-AC02-05CH11231. 
 
-\vspace{10mm}
+%\vspace{10mm}
 
-\noindent \textit{For the references, please use names from Ref.~\cite{hepmllivingreview}.  If your paper is not there or is not updated, please submit a MR!}
+%\noindent \textit{For the references, please use names from Ref.~\cite{hepmllivingreview}.  If your paper is not there or is not updated, please submit a MR!}
 
 \bibliographystyle{jhep}
+%\bibliography{contribution}
 \bibliography{HEPML}
 \end{document}
